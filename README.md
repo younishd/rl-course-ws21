@@ -11,6 +11,11 @@ The recommended way to setup your development environment is to use Anaconda:
 
 `conda activate rl-course`
 
-`pip3 install gym`
+4. Install the `numpy` and `gym` packages
 
-4. Start coding
+`conda install -c conda-forge gym`
+
+4. Test your setup by running:
+
+`python3 1_FrozenLake_Random.py`
+
