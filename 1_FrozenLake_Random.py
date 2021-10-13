@@ -7,30 +7,56 @@ random.seed(0)
 env.seed(0)
 
 print("## Frozen Lake ##")
-print("Start state:")
-env.render()
 
-no_of_actions = env.env.nA
-action2string = {0: "Left", 1: "Down", 2: "Right", 3: "Up"}
+action2string = { 0: "left", 1: "down", 2: "right", 3: "up" }
 
-state = env.reset()
-done = False
+def run_episode(env, policy=False):
+    policy = policy if policy else lambda s: random.randint(0, env.env.nA - 1)
+    state = env.reset()
+    done = False
+    episode = []
+    while not done:
+        action = policy(state)
+        new_state, reward, done, _ = env.step(action)
+        episode.append({ "action": action, "state": state , "new_state": new_state})
+        state = new_state
+        print("action: {}, state: {}, reward: {}".format(action2string[action], state, reward))
+        env.render()
+    return state, reward, done, episode
 
-while not done:
-    action = random.randint(0, no_of_actions-1)  # choose a random action
-    state, reward, done, _ = env.step(action)
-    print(f"\nAction:{action2string[action]}, new state:{state}, reward:{reward}")
-    #env.render()
+def run(policy=False, max_ep=False):
+    global env
+    global action2string
 
-print("new")
+    env.render()
 
-state = env.reset()
-done = False
-while not done:
-    action = random.randint(0, no_of_actions-1)  # choose a random action
-    state, reward, done, _ = env.step(action)
-    print(f"\nAction:{action2string[action]}, new state:{state}, reward:{reward}")
+    ep_count = 0
+    while not max_ep or ep_count < max_ep:
+        ep_count += 1
+        print("episode: {}".format(ep_count))
+        state, reward, done, episode = run_episode(env, policy)
+        if state == 15:
+            break
+        print("---")
 
-print("\ndone!")
+    print()
+    print("done after {} episodes and {} actions!".format(ep_count, len(episode)))
+    for e in episode:
+        print("action: {}, state: {}".format(action2string[e["action"]], e["new_state"]))
 
+    return episode
 
+def policy_from_episode(env, episode):
+    state_actions = {}
+    for e in reversed(episode):
+        if e["state"] not in state_actions:
+            state_actions[e["state"]] = e["action"]
+        if len(state_actions) == env.env.nS:
+            break
+
+    print(state_actions)
+
+    return lambda s: state_actions[s] if s in state_actions else random.randint(0, env.env.nA - 1)
+
+e = run()
+run(policy=policy_from_episode(env, e))
