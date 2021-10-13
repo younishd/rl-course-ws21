@@ -8,7 +8,8 @@ env.seed(0)
 
 print("## Frozen Lake ##")
 
-action2string = { 0: "left", 1: "down", 2: "right", 3: "up" }
+action2string = {0: "left", 1: "down", 2: "right", 3: "up"}
+
 
 def run_episode(env, policy=False):
     policy = policy if policy else lambda s: random.randint(0, env.env.nA - 1)
@@ -18,11 +19,16 @@ def run_episode(env, policy=False):
     while not done:
         action = policy(state)
         new_state, reward, done, _ = env.step(action)
-        episode.append({ "action": action, "state": state , "new_state": new_state})
+        episode.append({"action": action, "state": state, "new_state": new_state})
         state = new_state
-        print("action: {}, state: {}, reward: {}".format(action2string[action], state, reward))
+        print(
+            "action: {}, state: {}, reward: {}".format(
+                action2string[action], state, reward
+            )
+        )
         env.render()
     return state, reward, done, episode
+
 
 def run(env, policy=False, max_ep=False):
     global action2string
@@ -41,9 +47,12 @@ def run(env, policy=False, max_ep=False):
     print()
     print("done after {} episodes and {} actions!".format(ep_count, len(episode)))
     for e in episode:
-        print("action: {}, state: {}".format(action2string[e["action"]], e["new_state"]))
+        print(
+            "action: {}, state: {}".format(action2string[e["action"]], e["new_state"])
+        )
 
     return episode
+
 
 def policy_from_episode(env, episode):
     state_actions = {}
@@ -55,7 +64,12 @@ def policy_from_episode(env, episode):
 
     print(state_actions)
 
-    return lambda s: state_actions[s] if s in state_actions else random.randint(0, env.env.nA - 1)
+    return (
+        lambda s: state_actions[s]
+        if s in state_actions
+        else random.randint(0, env.env.nA - 1)
+    )
+
 
 e = run(env)
 policy = policy_from_episode(env, e)
