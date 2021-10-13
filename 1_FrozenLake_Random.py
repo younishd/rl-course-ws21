@@ -37,7 +37,7 @@ def run(env, policy=False, max_ep=False):
         ep_count += 1
         # print("episode: {}".format(ep_count))
         state, reward, done, episode = run_episode(env, policy)
-        if state == 15:
+        if reward > 0:
             break
         # print("---")
 
