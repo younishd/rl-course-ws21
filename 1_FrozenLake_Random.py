@@ -24,8 +24,7 @@ def run_episode(env, policy=False):
         env.render()
     return state, reward, done, episode
 
-def run(policy=False, max_ep=False):
-    global env
+def run(env, policy=False, max_ep=False):
     global action2string
 
     env.render()
@@ -58,5 +57,12 @@ def policy_from_episode(env, episode):
 
     return lambda s: state_actions[s] if s in state_actions else random.randint(0, env.env.nA - 1)
 
-e = run()
-run(policy=policy_from_episode(env, e))
+e = run(env)
+policy = policy_from_episode(env, e)
+run(env, policy=policy)
+
+env = gym.make("FrozenLake-v1", is_slippery=False, map_name="8x8")
+run(env)
+
+env = gym.make("FrozenLake-v1", is_slippery=True)
+run(env, policy=policy)
