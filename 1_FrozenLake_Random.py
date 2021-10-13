@@ -18,12 +18,12 @@ def run_episode(env, policy=False):
         new_state, reward, done, _ = env.step(action)
         episode.append({"action": action, "state": state, "new_state": new_state})
         state = new_state
-        print(
-            "action: {}, state: {}, reward: {}".format(
-                action2string[action], state, reward
-            )
-        )
-        env.render()
+        # print(
+        #     "action: {}, state: {}, reward: {}".format(
+        #         action2string[action], state, reward
+        #     )
+        # )
+        # env.render()
     return state, reward, done, episode
 
 
@@ -35,11 +35,11 @@ def run(env, policy=False, max_ep=False):
     ep_count = 0
     while not max_ep or ep_count < max_ep:
         ep_count += 1
-        print("episode: {}".format(ep_count))
+        # print("episode: {}".format(ep_count))
         state, reward, done, episode = run_episode(env, policy)
         if state == 15:
             break
-        print("---")
+        # print("---")
 
     print()
     print("done after {} episodes and {} actions!".format(ep_count, len(episode)))
@@ -58,8 +58,6 @@ def policy_from_episode(env, episode):
             state_actions[e["state"]] = e["action"]
         if len(state_actions) == env.env.nS:
             break
-
-    print(state_actions)
 
     return (
         lambda s: state_actions[s]
