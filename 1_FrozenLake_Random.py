@@ -2,7 +2,6 @@ import gym
 import random
 
 random.seed(0)
-env.seed(0)
 
 print("## Frozen Lake ##")
 
@@ -70,13 +69,16 @@ def policy_from_episode(env, episode):
 
 
 env = gym.make("FrozenLake-v1", is_slippery=False)
+env.seed(0)
 e = run(env)
 
 policy = policy_from_episode(env, e)
 run(env, policy=policy)
 
 env = gym.make("FrozenLake-v1", is_slippery=False, map_name="8x8")
+env.seed(0)
 run(env)
 
 env = gym.make("FrozenLake-v1", is_slippery=True)
+env.seed(0)
 run(env, policy=policy)
