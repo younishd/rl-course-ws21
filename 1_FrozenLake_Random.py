@@ -1,7 +1,7 @@
 import gym
 import random
 
-env = gym.make("FrozenLake-v0", is_slippery=False)
+env = gym.make("FrozenLake-v1", is_slippery=False)
 
 random.seed(0)
 env.seed(0)
