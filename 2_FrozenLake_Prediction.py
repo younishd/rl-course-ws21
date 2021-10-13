@@ -30,20 +30,20 @@ def play_episode(policy=None):
 
 def main():
     q = np.zeros(shape=(env.env.nS, env.env.nA))
+    n = np.zeros(shape=(env.env.nS, env.env.nA))
 
     successful_episodes = 100
     ep = 1
     while ep <= successful_episodes:
         states, actions, rewards = play_episode()
-        total_reward = sum(rewards)
 
-        if total_reward > 0:
+        if sum(rewards) > 0:
             # Task 1: print Q-values using MC
-            n = np.zeros(shape=(env.env.nS, env.env.nA))
-
-            for s, a in zip(states[:-1], actions):
+            for i, a in enumerate(actions):
+                s = states[i]
+                g = sum(rewards[i:])
                 n[s, a] += 1
-                q[s, a] = q[s, a] + 1 / n[s, a] * (total_reward - q[s, a])
+                q[s, a] += 1 / n[s, a] * (g - q[s, a])
 
             print("episode:\t{}".format(ep))
             print("q-values:")
