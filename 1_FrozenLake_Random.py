@@ -1,8 +1,6 @@
 import gym
 import random
 
-env = gym.make("FrozenLake-v1", is_slippery=False)
-
 random.seed(0)
 env.seed(0)
 
@@ -71,7 +69,9 @@ def policy_from_episode(env, episode):
     )
 
 
+env = gym.make("FrozenLake-v1", is_slippery=False)
 e = run(env)
+
 policy = policy_from_episode(env, e)
 run(env, policy=policy)
 
