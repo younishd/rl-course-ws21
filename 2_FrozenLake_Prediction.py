@@ -32,7 +32,7 @@ def main():
     q = np.zeros(shape=(env.env.nS, env.env.nA))
     n = np.zeros(shape=(env.env.nS, env.env.nA))
 
-    successful_episodes = 100
+    successful_episodes = 1000
     ep = 1
     while ep <= successful_episodes:
         states, actions, rewards = play_episode()
@@ -43,14 +43,13 @@ def main():
             n[s, a] += 1
             q[s, a] += 1 / n[s, a] * (g - q[s, a])
 
-        # Task 1: update Q-values using MC
-
         if sum(rewards) > 0:
             print("episode:\t{}".format(ep))
             print("q-values:")
             print(q)
 
-            greedy_policy = lambda s: np.random.choice(np.flatnonzero(q[s, :] == q[s, :].max()))
+            #greedy_policy = lambda s: np.random.choice(np.flatnonzero(q[s, :] == q[s, :].max()))
+            greedy_policy = lambda s: q[s, :].argmax()
             total_rewards = []
             for _ in range(100):
                 states, actions, rewards = play_episode(policy=greedy_policy)
