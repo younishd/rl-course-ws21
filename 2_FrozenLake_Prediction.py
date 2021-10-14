@@ -43,6 +43,8 @@ def main():
             n[s, a] += 1
             q[s, a] += 1 / n[s, a] * (g - q[s, a])
 
+        # Task 1: update Q-values using MC
+
         if sum(rewards) > 0:
             print("episode:\t{}".format(ep))
             print("q-values:")
