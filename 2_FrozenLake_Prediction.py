@@ -37,19 +37,17 @@ def main():
     while ep <= successful_episodes:
         states, actions, rewards = play_episode()
 
-        if sum(rewards) > 0:
-            # Task 1: print Q-values using MC
-            for i, a in enumerate(actions):
-                s = states[i]
-                g = sum(rewards[i:])
-                n[s, a] += 1
-                q[s, a] += 1 / n[s, a] * (g - q[s, a])
+        for i, a in enumerate(actions):
+            s = states[i]
+            g = sum(rewards[i:])
+            n[s, a] += 1
+            q[s, a] += 1 / n[s, a] * (g - q[s, a])
 
+        if sum(rewards) > 0:
             print("episode:\t{}".format(ep))
             print("q-values:")
             print(q)
 
-            # Task 2: play 100 episodes using current Q-values and greedy policy
             greedy_policy = lambda s: np.random.choice(np.flatnonzero(q[s, :] == q[s, :].max()))
             total_rewards = []
             for _ in range(100):
