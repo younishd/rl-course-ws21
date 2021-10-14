@@ -25,4 +25,4 @@ function to normalize the network's output to probabilities.
 
 ### Task 4:
 Train a model on the digits dataset and see how accurate you can get
-(use https://github.com/pabair/ml-kurs-ss21/blob/main/2_Logistische_Regression_Digits.ipynb as template).
+(use https://github.com/pabair/ml-kurs-ws21/blob/main/2_Logistische_Regression_Digits.ipynb as template).
