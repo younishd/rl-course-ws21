@@ -3,7 +3,7 @@ import gym
 import matplotlib.pyplot as plt
 import numpy as np
 
-env = gym.make("FrozenLake-v0")
+env = gym.make("FrozenLake-v1")
 random.seed(0)
 np.random.seed(0)
 env.seed(0)
