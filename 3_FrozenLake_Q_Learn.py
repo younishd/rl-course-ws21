@@ -15,10 +15,11 @@ env.render()
 no_states = env.observation_space.n
 no_actions = env.action_space.n
 q_values = np.zeros((no_states, no_actions))
-q_counter = np.zeros((no_states, no_actions))
 
 
 def play_episode(q, eps):
+    alpha = 0.5
+    gamma = 1.0
     state = env.reset()
     done = False
     r_s = []
@@ -33,30 +34,27 @@ def play_episode(q, eps):
         action = eps_greedy(state, eps)
 
         s_a.append((state, action))
-        state, reward, done, _ = env.step(action)
+        new_state, reward, done, _ = env.step(action)
+
         r_s.append(reward)
+
+        q_values[state, action] += alpha * (reward + gamma * q_values[new_state, :].max() - q_values[state, action])
+        state = new_state
     return s_a, r_s
 
 
 def main():
-    alpha = 0.5
-    gamma = 1.0
     no_episodes = 1000
     plot_data = []
 
-    # mc control
+    # q-learning
     for eps in [0.01, 0.1, 0.5, 1.0]:
         rewards = []
         for _ in range(0, no_episodes):
             s_a, r_s = play_episode(q_values, eps)
             rewards.append(sum(r_s))
 
-            for i, (s, a) in enumerate(s_a):
-                return_i = sum(r_s[i:])
-                q_counter[s, a] += 1
-                q_values[s, a] += 1 / q_counter[s, a] * (return_i - q_values[s, a])
-
-        plot_data.append((eps, np.cumsum(rewards), "MC control (eps={})".format(eps)))
+        plot_data.append((eps, np.cumsum(rewards), "Q-learn (eps={})".format(eps)))
 
     # plot the rewards
     plt.figure()
