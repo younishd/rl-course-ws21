@@ -25,9 +25,10 @@ def play_episode(q, eps):
     s_a = []
 
     while not done:
-        action = (lambda s: q[s, :].argmax() if np.random.uniform() > eps else np.random.choice(list(range(0, 4))))(
-            state
+        eps_greedy = (
+            lambda s, eps: q[s, :].argmax() if np.random.uniform() > eps else np.random.choice(list(range(0, 4)))
         )
+        action = eps_greedy(state, eps)
 
         s_a.append((state, action))
         state, reward, done, _ = env.step(action)
