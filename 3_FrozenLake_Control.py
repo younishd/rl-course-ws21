@@ -3,7 +3,7 @@ import gym
 import matplotlib.pyplot as plt
 import numpy as np
 
-env = gym.make("FrozenLake-v0")
+env = gym.make("FrozenLake-v1")
 random.seed(0)
 np.random.seed(0)
 env.seed(0)
@@ -18,15 +18,19 @@ q_values = np.zeros((no_states, no_actions))
 q_counter = np.zeros((no_states, no_actions))
 
 
-def play_episode(q_values):
-
+def play_episode(q, eps):
     state = env.reset()
     done = False
     r_s = []
     s_a = []
+
     while not done:
         # TODO: use q-values to implement epsilon-greedy
-        action = random.randint(0, 3)
+        action = (
+            lambda s: q[s, :].argmax()
+            if random.random() > eps
+            else random.choice([i for i in range(0, 4) if i != q[s, :].argmax()])
+        )(state)
 
         s_a.append((state, action))
         state, reward, done, _ = env.step(action)
@@ -35,21 +39,28 @@ def play_episode(q_values):
 
 
 def main():
-    no_episodes = 1000
-    rewards = []
-    for i in range(0, no_episodes):
-        s, r = play_episode(q_values)
-        rewards.append(sum(r))
+    no_episodes = 10000
+    plot_data = []
+    for eps in [0.01, 0.1, 0.5, 1.0]:
+        rewards = []
+        for i in range(0, no_episodes):
+            s_a, r_s = play_episode(q_values, eps)
+            rewards.append(sum(r_s))
 
-        # TODO: update q-values with MC-prediction
+            # TODO: update q-values with MC-prediction
+            for i, (s, a) in enumerate(s_a):
+                return_i = sum(r_s[i:])
+                q_counter[s][a] += 1
+                q_values[s][a] += 1 / q_counter[s][a] * (return_i - q_values[s][a])
 
-    plot_data = np.cumsum(rewards)
+        plot_data.append((eps, np.cumsum(rewards)))
 
     # plot the rewards
     plt.figure()
     plt.xlabel("No. of episodes")
     plt.ylabel("Sum of Rewards")
-    plt.plot(range(0, no_episodes), plot_data, label="random")
+    for (eps, data) in plot_data:
+        plt.plot(range(0, no_episodes), data, label="eps={}".format(eps))
     plt.legend()
     plt.show()
 
