@@ -39,6 +39,8 @@ def play_episode(q, eps):
 
 
 def main():
+    alpha = 0.5
+    gamma = 1.0
     no_episodes = 10000
     plot_data = []
     for eps in [0.01, 0.1, 0.5, 1.0]:
@@ -51,7 +53,7 @@ def main():
             for i, (s, a) in enumerate(s_a):
                 return_i = sum(r_s[i:])
                 q_counter[s, a] += 1
-                q_values[s, a] += 1 / q_counter[s, a] * (return_i - q_values[s, a])
+                q_values[s, a] += alpha * (r_s[i] + gamma * max(q_values[s, :]) - q_values[s, a])
 
         plot_data.append((eps, np.cumsum(rewards)))
 
